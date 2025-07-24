@@ -34,6 +34,11 @@
     </div>
 
     {{ form.submit(class="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700") }}
+    <p class="my-3 text-center">Have an account? <span class="text-blue-500">
+      <a href="{{url_for('auth.login')}}">
+        Login
+      </a>
+      <span/> </p>
   </form>
 </div>
 {% endblock %}

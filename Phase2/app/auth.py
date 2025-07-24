@@ -2,7 +2,7 @@ from flask import Blueprint , render_template , redirect , url_for , flash , req
 from app.models import User
 from app import db
 from app.form import RegistrationForm
-from flask_login import login_required ,current_user , login_user
+from flask_login import login_required ,current_user , login_user , logout_user
 
 
 auth = Blueprint("auth", __name__)
@@ -49,6 +49,19 @@ def login():
 @auth.route("/dashboard")
 @login_required
 def dashboard():
-    return f"<h1>Welcome, {current_user.username}!</h1>"
+    if not current_user.is_authenticated:
+        return redirect(url_for("auth.login"))
+    return f"""
+        <h1>Welcome, {current_user.username}!</h1>
+        <a href="{url_for('auth.logout')}">Logout</a>
+    """
+
+@auth.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    flash("You have been logged out.", "info")
+    return redirect(url_for("auth.login"))
+
 
 
