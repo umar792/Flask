@@ -1,5 +1,5 @@
 from flask import Blueprint , render_template , redirect , url_for , flash , request
-from app.models import User
+from app.models import User , CartItem
 from app import db
 from app.form import RegistrationForm
 from flask_login import login_required ,current_user , login_user , logout_user
@@ -43,7 +43,8 @@ def login():
             return redirect(url_for("auth.login"))
         else:
             login_user(user)
-            return redirect(url_for("auth.dashboard"))
+            cartData = CartItem.query.filter_by(user_id=current_user.id).all()
+            return redirect(url_for("home",cartData=cartData))
     return render_template("login.html")
 
 @auth.route("/dashboard")
@@ -51,10 +52,7 @@ def login():
 def dashboard():
     if not current_user.is_authenticated:
         return redirect(url_for("auth.login"))
-    return f"""
-        <h1>Welcome, {current_user.username}!</h1>
-        <a href="{url_for('auth.logout')}">Logout</a>
-    """
+    return render_template("dashboard.html")
 
 @auth.route("/logout")
 @login_required
