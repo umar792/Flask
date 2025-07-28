@@ -1,5 +1,5 @@
 from flask import Blueprint , render_template , redirect , url_for , flash , request
-from app.models import User , CartItem
+from app.models import User , CartItem ,Product
 from app import db
 from app.form import RegistrationForm
 from flask_login import login_required ,current_user , login_user , logout_user
@@ -47,6 +47,13 @@ def login():
             return redirect(url_for("home",cartData=cartData))
     return render_template("login.html")
 
+@auth.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    products = Product.query.filter_by().all()
+    return render_template("home.html" , current_user=current_user , products=products)
+
 @auth.route("/dashboard")
 @login_required
 def dashboard():
@@ -54,12 +61,10 @@ def dashboard():
         return redirect(url_for("auth.login"))
     return render_template("dashboard.html")
 
-@auth.route("/logout")
-@login_required
-def logout():
-    logout_user()
-    flash("You have been logged out.", "info")
-    return redirect(url_for("auth.login"))
+
+
+
+
 
 
 
