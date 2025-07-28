@@ -35,8 +35,24 @@ def create_app():
            return send_from_directory("../static/uploads", filename)
      
      from app.models import Product
+     from app.models import CartItem
      @app.route("/", methods=["GET"])
      def home():
           products = Product.query.filter_by().all()
           return render_template("home.html" , current_user=current_user , products=products)
+     
+
+     @app.route("/product/detail/<int:id>")
+     def detail(id):
+          product = Product.query.filter_by(id=id).first()
+          return render_template("detail.html", product=product)
+
+     @app.route("/cart/<int:id>")
+     def addToCart(id):
+          product = Product.query.filter_by(id=id).first()
+          item = CartItem.query.filter_by(user_id=current_user.id , product_id=id)
+          if item:
+               return render_template("detail.html", product=product) 
+           
+          return render_template("detail.html", product=product) 
      return app
